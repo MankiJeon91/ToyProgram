@@ -49,9 +49,17 @@ public class MemberAddServlet extends HttpServlet {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println("<html><head><title>회원등록결과</title></head>");
+			
+			//Refresh 2.HTML의 meta 태그를 이용
+			out.println("<meta http-equiv='Refresh' content='1; url=list'>");
+			
 			out.println("<body>");
 			out.println("<p>등록성공</p>");
 			out.println("</body></html>");
+			
+			//Refresh 1.응답헤더를 이용
+			response.addHeader("Refresh", "1;url=list");
+			
 		}catch (Exception e) {
 			throw new ServletException(e);
 		}finally {
