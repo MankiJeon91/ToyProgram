@@ -32,6 +32,9 @@ public class MemberListServlet extends GenericServlet {
 			PrintWriter writer = response.getWriter();
 			writer.println("<html><head><title>회원목록</title></head>");
 			writer.println("<body><h1>회원목록</h1>");
+			
+			writer.println("<p><a href='add'>신규 회원</a></p>");
+			
 			while (rs.next()) {
 				writer.println(rs.getInt("MNO") + "," + rs.getString("MNAME") + "," + rs.getString("EMAIL") + ","
 						+ rs.getDate("CRE_DATE") + "<br>");
