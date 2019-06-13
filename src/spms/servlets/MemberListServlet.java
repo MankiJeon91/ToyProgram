@@ -24,9 +24,9 @@ public class MemberListServlet extends GenericServlet {
 
 		try {
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/studydb", "study", "study");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/studydb?serverTimezone=UTC&useSSL=false", "study", "study");
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("select MNO, MNAME, EMAIL, CRE_DATE" + "from MEMBERS" + "order by MNO ASC");
+			rs = stmt.executeQuery("SELECT MNO, MNAME, EMAIL, CRE_DATE FROM MEMBERS ORDER BY MNO ASC");
 
 			response.setContentType("text/html;charset=UTF-8");
 			PrintWriter writer = response.getWriter();
@@ -36,7 +36,9 @@ public class MemberListServlet extends GenericServlet {
 			writer.println("<p><a href='add'>신규 회원</a></p>");
 			
 			while (rs.next()) {
-				writer.println(rs.getInt("MNO") + "," + rs.getString("MNAME") + "," + rs.getString("EMAIL") + ","
+				writer.println(rs.getInt("MNO") + "," +
+						"<a href='update?no=" + rs.getInt("MNO") + "'>" + rs.getString("MNAME") + "</a>,"	//<a href='update?no=1'>홍길동</a>형식 
+						+ rs.getString("EMAIL") + ","
 						+ rs.getDate("CRE_DATE") + "<br>");
 			}
 			writer.println("</body></html>");
