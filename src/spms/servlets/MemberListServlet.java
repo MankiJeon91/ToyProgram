@@ -41,7 +41,7 @@ public class MemberListServlet extends HttpServlet {
 				writer.println(rs.getInt("MNO") + "," +
 						"<a href='update?no=" + rs.getInt("MNO") + "'>" + rs.getString("MNAME") + "</a>,"	//<a href='update?no=1'>홍길동</a>형식 
 						+ rs.getString("EMAIL") + ","
-						+ rs.getDate("CRE_DATE") + "<br>");
+						+ rs.getDate("CRE_DATE") + "<a href='delete?no=" + rs.getInt("MNO") + "'>[삭제]</a><br>");
 			}
 			writer.println("</body></html>");
 		} catch (Exception e) {
