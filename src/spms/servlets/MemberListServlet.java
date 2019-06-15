@@ -64,7 +64,14 @@ public class MemberListServlet extends HttpServlet {
 			 * "'>[삭제]</a><br>"); } writer.println("</body></html>");
 			 */
 		} catch (Exception e) {
-			throw new ServletException(e);
+			/* 오류 시 오류 화면으로 대체
+			 * throw new ServletException(e);
+			 */
+			// 에러 발생 시, Error.jsp로 forwarding
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+			rd.forward(request, response);
+			
 		} finally {
 			try {
 				if(rs != null)
