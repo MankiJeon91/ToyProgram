@@ -29,34 +29,36 @@ public class MemberListServlet extends HttpServlet {
 
 		try {
 			ServletContext sc = this.getServletContext();
-			/* ServletContext에 저장된 DBConnection 사용하기 위해 주석처리
+			/*
+			 * ServletContext에 저장된 DBConnection 사용하기 위해 주석처리
 			 * Class.forName(sc.getInitParameter("driver")); conn =
 			 * DriverManager.getConnection(sc.getInitParameter("url"),
 			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
 			 */
-			
+
 			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT MNO, MNAME, EMAIL, CRE_DATE FROM MEMBERS ORDER BY MNO ASC");
 
 			response.setContentType("text/html;charset=UTF-8");
-			
+
 			List<Member> members = new ArrayList<Member>();
-			
-			while(rs.next()) {
-				members.add(new Member().setNo(rs.getInt("MNO")).setName(rs.getString("MNAME")).setEmail(rs.getString("EMAIL")).setCreatedDate(rs.getDate("CRE_DATE")));
+
+			while (rs.next()) {
+				members.add(new Member().setNo(rs.getInt("MNO")).setName(rs.getString("MNAME"))
+						.setEmail(rs.getString("EMAIL")).setCreatedDate(rs.getDate("CRE_DATE")));
 			}
-			
-			//request에 회원 목록 데이터를 보관한다.
+
+			// request에 회원 목록 데이터를 보관한다.
 			request.setAttribute("members", members);
-			
-			//JSP로 출력을 위임한다.
+
+			// JSP로 출력을 위임한다.
 			RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
-			//이제 해당 JSP와 serlvet은 request와 response를 공유한다.
+			// 이제 해당 JSP와 serlvet은 request와 response를 공유한다.
 			rd.include(request, response);
-			
-			/* JSP를 적용하기 위해 삭제
-			 * PrintWriter writer = response.getWriter();
+
+			/*
+			 * JSP를 적용하기 위해 삭제 PrintWriter writer = response.getWriter();
 			 * writer.println("<html><head><title>회원목록</title></head>");
 			 * writer.println("<body><h1>회원목록</h1>");
 			 * 
@@ -69,24 +71,27 @@ public class MemberListServlet extends HttpServlet {
 			 * "'>[삭제]</a><br>"); } writer.println("</body></html>");
 			 */
 		} catch (Exception e) {
-			// 오류 시 오류 화면으로 대체
-			  throw new ServletException(e);
-			 
-			// 에러 발생 시, Error.jsp로 forwarding
 			/*
-			 * request.setAttribute("error", e); RequestDispatcher rd =
-			 * request.getRequestDispatcher("/Error.jsp"); rd.forward(request, response);
+			 * // 오류 시 오류 화면으로 대체 throw new ServletException(e);
 			 */
-			
+
+			// 에러 발생 시, Error.jsp로 forwarding
+
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+			rd.forward(request, response);
+
 		} finally {
 			try {
-				if(rs != null)
+				if (rs != null)
 					rs.close();
-			} catch (Exception e2) {}
+			} catch (Exception e2) {
+			}
 			try {
-				if(stmt != null)
+				if (stmt != null)
 					stmt.close();
-			} catch (Exception e2) {}
+			} catch (Exception e2) {
+			}
 			/*
 			 * try { if(conn != null) conn.close(); } catch (Exception e2) {}
 			 */

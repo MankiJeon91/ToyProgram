@@ -28,7 +28,7 @@ public class MemberAddServlet extends HttpServlet {
 		out.println("이메일 : <input type='text' name='email'><br>");
 		out.println("암호 : <input type='password' name='password'><br>");
 		out.println("<input type='submit' value='추가'>");
-		out.println("<input type='reset' value='취소'>");
+		out.println("<input type='reset' value='취소' onclick='location.href=\"list\"'>");
 		out.println("</form>");
 		out.println("</body></html>");
 	}
