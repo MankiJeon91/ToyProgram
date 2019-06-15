@@ -45,8 +45,13 @@ public class MemberAddServlet extends HttpServlet {
 
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"), sc.getInitParameter("password"));
+			
+			/* ServletContext를 이용해 DBConnection 처리하기 위해 주석처리
+			 * Class.forName(sc.getInitParameter("driver")); conn =
+			 * DriverManager.getConnection(sc.getInitParameter("url"),
+			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
+			 */
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL, PWD, MNAME, CRE_DATE, MOD_DATE)" + "VALUES(?,?,?, NOW(), NOW())");
 			stmt.setString(1, request.getParameter("email"));
@@ -71,11 +76,9 @@ public class MemberAddServlet extends HttpServlet {
 					stmt.close();
 			} catch (Exception e) {
 			}
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-			}
+			/*
+			 * try { if (conn != null) conn.close(); } catch (Exception e) { }
+			 */
 		}
 	}
 

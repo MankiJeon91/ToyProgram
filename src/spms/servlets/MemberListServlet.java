@@ -29,8 +29,13 @@ public class MemberListServlet extends HttpServlet {
 
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"), sc.getInitParameter("password"));
+			/* ServletContext에 저장된 DBConnection 사용하기 위해 주석처리
+			 * Class.forName(sc.getInitParameter("driver")); conn =
+			 * DriverManager.getConnection(sc.getInitParameter("url"),
+			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
+			 */
+			
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT MNO, MNAME, EMAIL, CRE_DATE FROM MEMBERS ORDER BY MNO ASC");
 
@@ -64,13 +69,14 @@ public class MemberListServlet extends HttpServlet {
 			 * "'>[삭제]</a><br>"); } writer.println("</body></html>");
 			 */
 		} catch (Exception e) {
-			/* 오류 시 오류 화면으로 대체
-			 * throw new ServletException(e);
-			 */
+			// 오류 시 오류 화면으로 대체
+			  throw new ServletException(e);
+			 
 			// 에러 발생 시, Error.jsp로 forwarding
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			/*
+			 * request.setAttribute("error", e); RequestDispatcher rd =
+			 * request.getRequestDispatcher("/Error.jsp"); rd.forward(request, response);
+			 */
 			
 		} finally {
 			try {
@@ -81,10 +87,9 @@ public class MemberListServlet extends HttpServlet {
 				if(stmt != null)
 					stmt.close();
 			} catch (Exception e2) {}
-			try {
-				if(conn != null)
-					conn.close();
-			} catch (Exception e2) {}
+			/*
+			 * try { if(conn != null) conn.close(); } catch (Exception e2) {}
+			 */
 		}
 	}
 

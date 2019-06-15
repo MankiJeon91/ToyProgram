@@ -26,8 +26,13 @@ public class MemberUpdateServlet extends HttpServlet {
 		
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"), sc.getInitParameter("password"));
+			/*
+			 * Class.forName(sc.getInitParameter("driver")); conn =
+			 * DriverManager.getConnection(sc.getInitParameter("url"),
+			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
+			 */
+			
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("select MNO, EMAIL, MNAME, CRE_DATE from MEMBERS where MNO=" + request.getParameter("no"));
 			
@@ -53,7 +58,7 @@ public class MemberUpdateServlet extends HttpServlet {
 		} finally {
 			try {if(rs != null) rs.close();} catch (Exception e) {}
 			try {if(stmt != null) stmt.close();} catch (Exception e) {}
-			try {if(conn != null) conn.close();} catch (Exception e) {}
+			/* try {if(conn != null) conn.close();} catch (Exception e) {} */
 		}
 	}
 	
@@ -69,8 +74,12 @@ public class MemberUpdateServlet extends HttpServlet {
 		
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"), sc.getInitParameter("password"));
+			/*
+			 * Class.forName(sc.getInitParameter("driver")); conn =
+			 * DriverManager.getConnection(sc.getInitParameter("url"),
+			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
+			 */
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?, MNAME=?, MOD_DATE=now() where MNO=?");
 			stmt.setString(1, request.getParameter("email"));
 			stmt.setString(2, request.getParameter("name"));
@@ -82,7 +91,7 @@ public class MemberUpdateServlet extends HttpServlet {
 			throw new ServletException(e);
 		}finally {
 			try {if(stmt != null) stmt.close();} catch (Exception e) {}
-			try {if(conn != null) conn.close();} catch (Exception e) {}
+			/* try {if(conn != null) conn.close();} catch (Exception e) {} */
 		}
 	}
 	
