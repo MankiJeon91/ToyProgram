@@ -3,8 +3,6 @@ package spms.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import spms.dao.MemberDao;
+import spms.vo.Member;
+
+@SuppressWarnings("serial")
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet {
 
@@ -28,18 +30,6 @@ public class MemberAddServlet extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
 			rd.forward(request, response);
 		}
-		/* JSP로 페이지 권한 위임
-		 * response.setContentType("text/html; charset=UTF-8"); PrintWriter out =
-		 * response.getWriter(); out.println("<html><head><title>회원등록</title></head>");
-		 * out.println("<body><h1>회원등록</h1>");
-		 * out.println("<form action='add' method='post'>");
-		 * out.println("이름 : <input type='text' name='name'><br>");
-		 * out.println("이메일 : <input type='text' name='email'><br>");
-		 * out.println("암호 : <input type='password' name='password'><br>");
-		 * out.println("<input type='submit' value='추가'>"); out.
-		 * println("<input type='reset' value='취소' onclick='location.href=\"list\"'>");
-		 * out.println("</form>"); out.println("</body></html>");
-		 */
 	}
 
 	@Override
@@ -48,26 +38,15 @@ public class MemberAddServlet extends HttpServlet {
 		/* 필터적용을 위해 주석처리
 		 * request.setCharacterEncoding("UTF-8");
 		 */
-		
-		Connection conn = null;
-		PreparedStatement stmt = null;
-
 		try {
 			ServletContext sc = this.getServletContext();
+						
+			Connection conn = (Connection) sc.getAttribute("conn");
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
+			Member member = new Member().setEmail(request.getParameter("email")).setPassword(request.getParameter("password")).setName(request.getParameter("name"));
+			memberDao.insert(member);
 			
-			/* ServletContext를 이용해 DBConnection 처리하기 위해 주석처리
-			 * Class.forName(sc.getInitParameter("driver")); conn =
-			 * DriverManager.getConnection(sc.getInitParameter("url"),
-			 * sc.getInitParameter("username"), sc.getInitParameter("password"));
-			 */
-			conn = (Connection) sc.getAttribute("conn");
-			stmt = conn.prepareStatement(
-					"INSERT INTO MEMBERS(EMAIL, PWD, MNAME, CRE_DATE, MOD_DATE)" + "VALUES(?,?,?, NOW(), NOW())");
-			stmt.setString(1, request.getParameter("email"));
-			stmt.setString(2, request.getParameter("password"));
-			stmt.setString(3, request.getParameter("name"));
-			stmt.executeUpdate();
-
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println("<html><head><title>회원등록결과</title></head>");
@@ -79,16 +58,7 @@ public class MemberAddServlet extends HttpServlet {
 
 		} catch (Exception e) {
 			throw new ServletException(e);
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (Exception e) {
-			}
-			/*
-			 * try { if (conn != null) conn.close(); } catch (Exception e) { }
-			 */
-		}
+		} 
 	}
 
 }
