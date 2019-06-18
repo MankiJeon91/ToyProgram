@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,19 +19,27 @@ public class MemberAddServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>회원등록</title></head>");
-		out.println("<body><h1>회원등록</h1>");
-		out.println("<form action='add' method='post'>");
-		out.println("이름 : <input type='text' name='name'><br>");
-		out.println("이메일 : <input type='text' name='email'><br>");
-		out.println("암호 : <input type='password' name='password'><br>");
-		out.println("<input type='submit' value='추가'>");
-		out.println("<input type='reset' value='취소' onclick='location.href=\"list\"'>");
-		out.println("</form>");
-		out.println("</body></html>");
+			throws ServletException, IOException {		
+		try {
+			RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
+			rd.forward(request, response);
+		} catch (Exception e) {
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+			rd.forward(request, response);
+		}
+		/* JSP로 페이지 권한 위임
+		 * response.setContentType("text/html; charset=UTF-8"); PrintWriter out =
+		 * response.getWriter(); out.println("<html><head><title>회원등록</title></head>");
+		 * out.println("<body><h1>회원등록</h1>");
+		 * out.println("<form action='add' method='post'>");
+		 * out.println("이름 : <input type='text' name='name'><br>");
+		 * out.println("이메일 : <input type='text' name='email'><br>");
+		 * out.println("암호 : <input type='password' name='password'><br>");
+		 * out.println("<input type='submit' value='추가'>"); out.
+		 * println("<input type='reset' value='취소' onclick='location.href=\"list\"'>");
+		 * out.println("</form>"); out.println("</body></html>");
+		 */
 	}
 
 	@Override
