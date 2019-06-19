@@ -2,7 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -39,11 +38,9 @@ public class MemberAddServlet extends HttpServlet {
 		 * request.setCharacterEncoding("UTF-8");
 		 */
 		try {
-			ServletContext sc = this.getServletContext();
-						
-			Connection conn = (Connection) sc.getAttribute("conn");
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+			ServletContext sc = this.getServletContext();			
+			MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
+			
 			Member member = new Member().setEmail(request.getParameter("email")).setPassword(request.getParameter("password")).setName(request.getParameter("name"));
 			memberDao.insert(member);
 			

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServlet;
 
 public class AppInitServlet extends HttpServlet {

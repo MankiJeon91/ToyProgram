@@ -1,7 +1,6 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -30,9 +29,8 @@ public class LoginServlet extends HttpServlet {
 		
 		try {
 			ServletContext sc = this.getServletContext();
-			Connection conn = (Connection) sc.getAttribute("conn");
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+			
+			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");			
 			
 			Member member;
 			
