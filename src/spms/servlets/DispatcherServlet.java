@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import spms.bind.DataBinding;
 import spms.bind.ServletRequestDataBinder;
+import spms.context.ApplicationContext;
 import spms.controls.Controller;
+import spms.listeners.ContextLoaderListener;
 import spms.vo.Member;
 
 // ServletContext에 보관된 페이지 컨트롤러를 사용
@@ -26,13 +28,14 @@ public class DispatcherServlet extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		String servletPath = request.getServletPath();
 		try {
-			ServletContext sc = this.getServletContext();
-
+			ApplicationContext ctx = ContextLoaderListener.getApplicationContext();
 			// 페이지 컨트롤러에게 전달할 Map 객체를 준비한다.
 			HashMap<String, Object> model = new HashMap<String, Object>();
 			model.put("session", request.getSession());
 
-			Controller pageController = (Controller) sc.getAttribute(servletPath);
+			Controller pageController = (Controller) ctx.getBean(servletPath);
+			if(pageController == null)
+				throw new Exception("요청한 서비스를 찾을 수 없습니다.");
 			
 			//클라이언트에서 보낸 데이터를 Java 객체화
 			if (pageController instanceof DataBinding) {
