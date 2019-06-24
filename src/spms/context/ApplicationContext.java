@@ -23,18 +23,12 @@ public class ApplicationContext {
 		return objTable.get(key);
 	}
 	
-	//ApplicationContext 생성자. Properties 파일 로딩
-	public ApplicationContext(String propertiesPath) throws Exception {
-		Properties props = new Properties();
-		props.load(new FileReader(propertiesPath));
-		
-		prepareObjects(props);
-		prepareAnnotationObjects();
-		injectDependency();
+	public void addBean(String name, Object obj) {
+		objTable.put(name, obj);
 	}
 	
-	private void prepareAnnotationObjects() throws Exception {
-		Reflections reflector = new Reflections("");
+	public void prepareAnnotationObjects(String basePackage) throws Exception {
+		Reflections reflector = new Reflections(basePackage);
 		
 		Set<Class<?>> list = reflector.getTypesAnnotatedWith(Component.class);
 		String key = null;
@@ -45,11 +39,14 @@ public class ApplicationContext {
 	}
 	
 	//객체 준비
-	private void prepareObjects(Properties props) throws Exception {
-		//Tomcat 서버에 등록된 객체를 찾기 위함
+	public void prepareObjectsByProperties(String propertiesPath) throws Exception {		
+		Properties props = new Properties();
+		props.load(new FileReader(propertiesPath));
+		
 		Context ctx = new InitialContext();
 		String key = null;
 		String value = null;
+		
 		for (Object item : props.keySet()) {
 			key = (String) item;
 			value = props.getProperty(key);
@@ -61,7 +58,7 @@ public class ApplicationContext {
 		}
 	}
 	// 객체 의존 할당
-	private void injectDependency() throws Exception {
+	public void injectDependency() throws Exception {
 		for (String key : objTable.keySet()) {
 			if(!key.startsWith("jndi.")) {
 				callSetter(objTable.get(key));
